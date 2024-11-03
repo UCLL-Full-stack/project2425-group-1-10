@@ -56,7 +56,7 @@ const userService = new UserService();
  *               type: object
  *               properties:
  *                 id:
- *                   type: string
+ *                   type: number
  *                   description: The ID of the created user
  *       400:
  *         description: Invalid input
@@ -94,15 +94,15 @@ userRouter.post('/register', async (req: Request, res: Response) => {
  *       404:
  *         description: User not found
  */
-userRouter.get('/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
+// userRouter.get('/:id', async (req: Request, res: Response) => {
+//     const { id } = req.params;
 
-    const user = await userService.getUserById(id);
-    if (user) {
-        res.status(200).json(user);
-    } else {
-        res.status(404).json({ message: 'User not found' });
-    }
-});
+//     const user = await userService.getUserById(id);
+//     if (user) {
+//         res.status(200).json(user);
+//     } else {
+//         res.status(404).json({ message: 'User not found' });
+//     }
+// });
 
 export { userRouter };

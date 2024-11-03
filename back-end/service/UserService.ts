@@ -1,30 +1,30 @@
 import userDB from '../repository/user.db';
-import { IUser } from '../model/User';
+import { User, User as UserModel } from '../model/User'; 
 
 export class UserService {
-    async registerUser(userData: { username: string; password: string; email: string }): Promise<{ success: boolean; message?: string; user?: IUser }> {
+    async registerUser(userData: { username: string; password: string; email: string }): Promise<{ success: boolean; message?: string; user?: User }> {
         const { username, password, email } = userData;
 
         try {
             
-            const existingUser = await userDB.getAllUsers();
-            if (existingUser.some(user => user.email === email)) {
+            const existingUsers = await userDB.getAllUsers();
+            if (existingUsers.some(user => user.getEmail() === email)) {
                 return { success: false, message: "Email is already in use" };
             }
 
             
-            const newUser = { username, password, email } as IUser;
-            const savedUser = await userDB.createUser(newUser);
+            const newUser = new User({ username, password, email });
+            const savedUser = await userDB.createUser(newUser.toPlainObject()); 
             return { success: true, user: savedUser };
         } catch (error) {
-            console.error(error);
+            console.error("Error in registerUser:", error);
             return { success: false, message: "Failed to create user" };
         }
     }
 
-    async getUserById(id: string): Promise<{ success: boolean; message?: string; user?: IUser }> {
+    async getUserById(id: number): Promise<{ success: boolean; message?: string; user?: UserModel }> {
         try {
-            const user = await userDB.getUserById(id);
+            const user = await userDB.getUserById(id); 
             if (user) {
                 return { success: true, user };
             } else {
@@ -36,9 +36,9 @@ export class UserService {
         }
     }
 
-    async getAllUsers(): Promise<{ success: boolean; users?: IUser[]; message?: string }> {
+    async getAllUsers(): Promise<{ success: boolean; users?: UserModel[]; message?: string }> {
         try {
-            const users = await userDB.getAllUsers();
+            const users = await userDB.getAllUsers(); 
             return { success: true, users };
         } catch (error) {
             console.error(error);
