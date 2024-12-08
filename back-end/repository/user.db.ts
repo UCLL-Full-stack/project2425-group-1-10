@@ -1,35 +1,46 @@
-import { User } from '../model/User'; 
-import { User as UserModel } from '../model/User'; 
+import { prismaClient } from '../util/prismaClient';
+import { IUser } from '../model/User';
+import { CreateUserDTO } from '../dtos/User';
 
-const users: UserModel[] = []; 
-
-const createUser = async (userData: { username: string; password: string; email: string }): Promise<UserModel> => {
+const createUser = async (userData: CreateUserDTO): Promise<IUser> => {
     try {
-        const newUser = new User(userData); 
-        users.push(newUser); 
-        return newUser; 
+        const user = await prismaClient.user.create({
+            data: userData,
+        });
+        return user;
     } catch (error) {
-        console.error("Error in createUser:", error);
-        throw new Error('Error: cannot create the user');
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
-const getAllUsers = async (): Promise<UserModel[]> => {
+const getUserByEmail = async (email: string): Promise<IUser | null> => {
     try {
-        return users; 
+        return await prismaClient.user.findUnique({ where: { email } });
     } catch (error) {
-        console.error("Error in getAllUsers:", error);
-        throw new Error('Error: cannot getall users');
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
-const getUserById = async (id: number): Promise<UserModel | null> => {
+const getUserById = async (id: string): Promise<IUser | null> => {
     try {
-        return users.find(user => user.getId() === id) || null; 
+        return await prismaClient.user.findUnique({
+            where: { id: parseInt(id) },
+        });
     } catch (error) {
-        console.error("Error in getUserById:", error);
-        throw new Error('Error: cannot get user by id');
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
-export default { createUser, getAllUsers, getUserById };
+const getAllUsers = async (): Promise<IUser[]> => {
+    try {
+        return await prismaClient.user.findMany();
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+export default { createUser, getUserByEmail, getUserById, getAllUsers };

@@ -4,7 +4,9 @@ import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { userRouter } from './controller/user.routes'; 
+import { userRouter } from './controller/user.routes';
+import categoryRouter from './controller/category.routes';
+import { expenseRouter } from './controller/expense.routes';
 
 dotenv.config();
 
@@ -13,7 +15,6 @@ const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -29,24 +30,20 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: ['./controller/*.routes.ts'], 
+    apis: ['./controller/*.routes.ts'],
 };
-
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
 
-
-app.use('/users', userRouter); 
+app.use('/users', userRouter);
+app.use('/categories', categoryRouter);
+app.use('/expenses', expenseRouter);
 
 app.listen(port, () => {
     console.log(`Back-end is running on port ${port}.`);
 });
-
-
-

@@ -10,7 +10,8 @@
     },
     "scripts": {
         "test": "jest",
-        "start": "nodemon -L app.ts --delay 3"
+        "start": "nodemon -L app.ts --delay 3",
+        "seed": "ts-node util/seed.ts"
     },
     "nodemonConfig": {
         "ext": "ts",
@@ -20,6 +21,7 @@
         }
     },
     "dependencies": {
+        "@faker-js/faker": "^9.3.0",
         "@prisma/client": "^5.1.1",
         "bcrypt": "^5.1.0",
         "bcryptjs": "^2.4.3",

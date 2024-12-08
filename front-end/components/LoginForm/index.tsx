@@ -1,46 +1,42 @@
 import React, { useState } from 'react';
-import { User } from '../../types';
-import { createAccount } from '../../service/UserService';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
-const CreateAccount: React.FC = () => {
-    const [user, setUser] = useState<Omit<User, 'id'>>({ name: '', password: '', email: '' });
-    const [error, setError] = useState<{ name?: string; password?: string; email?: string }>({});
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+const LoginForm: React.FC = () => {
+    const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const [error, setError] = useState<{ email?: string; password?: string }>({});
     const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setUser((prevUser) => ({ ...prevUser, [name]: value }));
+        setCredentials((prev) => ({ ...prev, [name]: value }));
         setError((prevError) => ({ ...prevError, [name]: '' }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setSuccessMessage(null);
 
         // Basic validation
-        const newError: { name?: string; password?: string; email?: string } = {};
-        if (!user.name) newError.name = 'Username is required';
-        if (!user.password) newError.password = 'Password is required';
-        if (!user.email) newError.email = 'Email is required';
+        const newError: { email?: string; password?: string } = {};
+        if (!credentials.email) newError.email = 'Email is required';
+        if (!credentials.password) newError.password = 'Password is required';
 
         setError(newError);
 
         // Stop form submission if there are validation errors
         if (Object.keys(newError).length > 0) return;
 
-        const result = await createAccount(user);
-        console.log('result', result);
+        const result = await signIn('credentials', {
+            email: credentials.email,
+            password: credentials.password,
+            redirect: false,
+        });
 
-        if (result.success) {
-            setSuccessMessage('Account created successfully!');
-            setUser({ name: '', password: '', email: '' });
-            setError({});
-            router.push('/login');
+        if (result?.error) {
+            setError({ password: 'Invalid email or password' });
         } else {
-            setError({ email: result.error || 'Failed to create account' });
+            router.push('/dashboard'); // Redirect to dashboard after successful login
         }
     };
 
@@ -70,7 +66,7 @@ const CreateAccount: React.FC = () => {
                 }}
             >
                 <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>
-                    Create Account
+                    Login
                 </h2>
                 <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                     <div style={{ marginBottom: '16px' }}>
@@ -82,12 +78,12 @@ const CreateAccount: React.FC = () => {
                                 width: '100%',
                             }}
                         >
-                            Username
+                            Email
                         </label>
                         <input
-                            type="text"
-                            name="name"
-                            value={user.name}
+                            type="email"
+                            name="email"
+                            value={credentials.email}
                             onChange={handleChange}
                             style={{
                                 width: '100%',
@@ -96,8 +92,8 @@ const CreateAccount: React.FC = () => {
                                 borderRadius: '4px',
                             }}
                         />
-                        {error.name && (
-                            <div style={{ color: 'black', marginTop: '5px' }}>{error.name}</div>
+                        {error.email && (
+                            <div style={{ color: 'black', marginTop: '5px' }}>{error.email}</div>
                         )}
                     </div>
 
@@ -115,7 +111,7 @@ const CreateAccount: React.FC = () => {
                         <input
                             type="password"
                             name="password"
-                            value={user.password}
+                            value={credentials.password}
                             onChange={handleChange}
                             style={{
                                 width: '100%',
@@ -126,34 +122,6 @@ const CreateAccount: React.FC = () => {
                         />
                         {error.password && (
                             <div style={{ color: 'black', marginTop: '5px' }}>{error.password}</div>
-                        )}
-                    </div>
-
-                    <div style={{ marginBottom: '16px' }}>
-                        <label
-                            style={{
-                                fontWeight: 'bold',
-                                display: 'block',
-                                marginBottom: '5px',
-                                width: '100%',
-                            }}
-                        >
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={user.email}
-                            onChange={handleChange}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: '2px solid black',
-                                borderRadius: '4px',
-                            }}
-                        />
-                        {error.email && (
-                            <div style={{ color: 'black', marginTop: '5px' }}>{error.email}</div>
                         )}
                     </div>
 
@@ -169,16 +137,13 @@ const CreateAccount: React.FC = () => {
                             borderRadius: '4px',
                         }}
                     >
-                        Register
+                        Login
                     </button>
                 </form>
-                {successMessage && (
-                    <div style={{ color: 'green', marginTop: '10px' }}>{successMessage}</div>
-                )}
                 <div className="text-center mt-4">
-                    Already have an account?{' '}
-                    <Link className="text-blue-500" href="/login">
-                        Login
+                    Don't have an account?{' '}
+                    <Link className="text-blue-500" href="/register">
+                        Register
                     </Link>
                 </div>
             </div>
@@ -186,4 +151,4 @@ const CreateAccount: React.FC = () => {
     );
 };
 
-export default CreateAccount;
+export default LoginForm;

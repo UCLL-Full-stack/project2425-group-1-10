@@ -1,48 +1,68 @@
 import userDB from '../repository/user.db';
-import { User, User as UserModel } from '../model/User'; 
+import { IUser } from '../model/User';
+import { CreateUserDTO, LoginUserDTO } from '../dtos/User';
+import bcrypt from 'bcrypt';
 
 export class UserService {
-    async registerUser(userData: { username: string; password: string; email: string }): Promise<{ success: boolean; message?: string; user?: User }> {
-        const { username, password, email } = userData;
-
+    async loginUser(
+        data: LoginUserDTO
+    ): Promise<{ success: boolean; message?: string; user?: IUser }> {
         try {
-            
-            const existingUsers = await userDB.getAllUsers();
-            if (existingUsers.some(user => user.getEmail() === email)) {
-                return { success: false, message: "Email is already in use" };
+            const user = await userDB.getUserByEmail(data.email);
+            if (!user) {
+                return { success: false, message: 'User not found' };
             }
-
-            
-            const newUser = new User({ username, password, email });
-            const savedUser = await userDB.createUser(newUser.toPlainObject()); 
-            return { success: true, user: savedUser };
+            if (await bcrypt.compare(data.password, user.password)) {
+                return { success: true, user };
+            } else {
+                return { success: false, message: 'Invalid email or password' };
+            }
         } catch (error) {
-            console.error("Error in registerUser:", error);
-            return { success: false, message: "Failed to create user" };
+            console.error(error);
+            return { success: false, message: 'Failed to login' };
+        }
+    }
+    async registerUser(
+        data: CreateUserDTO
+    ): Promise<{ success: boolean; message?: string; user?: IUser }> {
+        try {
+            if (!data.email || !data.password || !data.name) {
+                return { success: false, message: 'Invalid user data' };
+            }
+            const existingUser = await userDB.getUserByEmail(data.email);
+            if (existingUser) {
+                return { success: false, message: 'Email is already in use' };
+            }
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+            const userData = { ...data, password: hashedPassword };
+            const user = await userDB.createUser(userData);
+            return { success: true, user };
+        } catch (error) {
+            console.error(error);
+            return { success: false, message: 'Failed to register user' };
         }
     }
 
-    async getUserById(id: number): Promise<{ success: boolean; message?: string; user?: UserModel }> {
+    async getUserById(id: string): Promise<{ success: boolean; message?: string; user?: IUser }> {
         try {
-            const user = await userDB.getUserById(id); 
+            const user = await userDB.getUserById(id);
             if (user) {
                 return { success: true, user };
             } else {
-                return { success: false, message: "User not found" };
+                return { success: false, message: 'User not found' };
             }
         } catch (error) {
             console.error(error);
-            return { success: false, message: "Failed to retrieve user" };
+            return { success: false, message: 'Failed to retrieve user' };
         }
     }
-
-    async getAllUsers(): Promise<{ success: boolean; users?: UserModel[]; message?: string }> {
+    async getAllUsers(): Promise<{ success: boolean; message?: string; users?: IUser[] }> {
         try {
-            const users = await userDB.getAllUsers(); 
+            const users = await userDB.getAllUsers();
             return { success: true, users };
         } catch (error) {
             console.error(error);
-            return { success: false, message: "Failed to retrieve users" };
+            return { success: false, message: 'Failed to retrieve users' };
         }
     }
 }
