@@ -1,12 +1,12 @@
+import * as bodyParser from 'body-parser';
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
-import cors from 'cors';
-import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { userRouter } from './controller/user.routes';
 import categoryRouter from './controller/category.routes';
 import { expenseRouter } from './controller/expense.routes';
+import { userRouter } from './controller/user.routes';
 
 dotenv.config();
 
@@ -45,5 +45,5 @@ app.use('/categories', categoryRouter);
 app.use('/expenses', expenseRouter);
 
 app.listen(port, () => {
-    console.log(`Back-end is running on port ${port}.`);
+    console.log(`Back-end is running on port http://localhost:${port}.`);
 });
