@@ -81,22 +81,18 @@ userRouter.post('/register', async (req: Request, res: Response) => {
     try {
         const { name, email, password } = req.body;
 
-        // Controleer of alle velden aanwezig zijn
         if (!name || !email || !password) {
             return res.status(400).json({ message: 'Name, email, and password are required.' });
         }
 
-        // Registreer de gebruiker via de UserService
         const result = await userService.registerUser({ name, email, password });
 
         if (result.success) {
-            // Geef een succesvolle response terug
             res.status(201).json({
                 message: 'User successfully registered',
                 user: result.user
             });
         } else {
-            // Geef een foutmelding terug vanuit de service
             res.status(400).json({ message: result.message });
         }
     } catch (error) {
