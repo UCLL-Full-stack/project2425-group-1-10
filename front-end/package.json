@@ -12,6 +12,7 @@
         "bootstrap": "5.2.3",
         "classnames": "^2.3.2",
         "dayjs": "^1.11.7",
+        "helmet": "^8.0.0",
         "i18next": "^23.7.6",
         "next": "^14.2.6",
         "next-auth": "^4.24.10",

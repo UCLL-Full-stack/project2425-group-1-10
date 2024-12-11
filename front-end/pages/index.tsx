@@ -17,8 +17,8 @@ const savingsQuotes = [
         text: 'The habit of saving is itself an education; it fosters every virtue, teaches self-denial, cultivates the sense of order, and trains to forethought.',
         author: 'T.T. Munger',
     },
-    { text: 'Saving today ensures a brighter tomorrow.', author: 'Unknown' },
-    { text: 'Financial freedom begins with savings.', author: 'Unknown' },
+    { text: 'Saving today ensures a brighter tomorrow.', author: 'Ayoub' },
+    { text: 'Financial freedom begins with savings.', author: 'Nasser' },
 ];
 
 const HomePage: React.FC = () => {

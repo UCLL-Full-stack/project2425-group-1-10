@@ -7,10 +7,13 @@ import swaggerUi from 'swagger-ui-express';
 import categoryRouter from './controller/category.routes';
 import { expenseRouter } from './controller/expense.routes';
 import { userRouter } from './controller/user.routes';
+import helmet from 'helmet';
 
 dotenv.config();
 
 const app = express();
+app.use(helmet());
+
 const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
