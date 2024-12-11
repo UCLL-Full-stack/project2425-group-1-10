@@ -6,7 +6,7 @@ const categoryService = new CategoryService();
 
 /**
  * @swagger
- * /api/categories:
+ * /categories:
  *   post:
  *     summary: Create a new category
  *     tags: [Categories]
@@ -62,7 +62,7 @@ categoryRouter.post('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/categories/user/{userId}:
+ * /categories/user/{userId}:
  *   get:
  *     summary: Get all categories for a user
  *     tags: [Categories]
@@ -92,7 +92,7 @@ categoryRouter.get('/user/:userId', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /categories/{id}:
  *   put:
  *     summary: Update a category
  *     tags: [Categories]
@@ -134,7 +134,7 @@ categoryRouter.put('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /categories/{id}:
  *   delete:
  *     summary: Delete a category
  *     tags: [Categories]
@@ -164,7 +164,7 @@ categoryRouter.delete('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/categories/statistics/{userId}:
+ * /categories/statistics/{userId}:
  *   get:
  *     summary: Get monthly statistics for categories
  *     tags: [Categories]

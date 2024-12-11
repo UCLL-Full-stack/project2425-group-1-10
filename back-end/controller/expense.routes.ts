@@ -78,21 +78,17 @@ expenseRouter.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /expenses:
+ * /expenses/user/{userId}:
  *   get:
  *     summary: Get all expenses for a user
  *     tags: [Expenses]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - userId
- *             properties:
- *               userId:
- *                 type: number
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the user
  *     responses:
  *       200:
  *         description: List of expenses
@@ -102,23 +98,28 @@ expenseRouter.post('/', async (req, res) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Expense'
+ *       400:
+ *         description: Error retrieving expenses
  *       401:
  *         description: Unauthorized
  */
-expenseRouter.get('/', async (req, res) => {
-    const { userId } = req.body;
-    if (!userId) {
-        return res.status(401).json({ message: 'Unauthorized' });
+
+expenseRouter.get('/user/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId);
+
+    if (isNaN(userId)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
     }
-    const result = await expenseService.getExpenseByUserId({
-        userId,
-    });
+
+    const result = await expenseService.getExpenseByUserId({ userId });
 
     if (result.success) {
-        return res.status(200).json(result);
+        return res.status(200).json(result.expenses);
+    } else {
+        return res.status(400).json({ message: result.message });
     }
-    return res.status(400).json(result);
 });
+
 
 /**
  * @swagger
