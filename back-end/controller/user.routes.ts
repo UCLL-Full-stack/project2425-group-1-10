@@ -31,22 +31,27 @@ const userService = new UserService();
  * /users/register:
  *   post:
  *     summary: Register a new user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
  *             properties:
- *               username:
+ *               name:
  *                 type: string
- *                 example: johndoe
- *               password:
- *                 type: string
- *                 example: password123
+ *                 example: John Doe
  *               email:
  *                 type: string
  *                 example: johndoe@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
  *     responses:
  *       201:
  *         description: User successfully registered
@@ -55,19 +60,48 @@ const userService = new UserService();
  *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 message:
  *                   type: string
- *                   description: The ID of the created user
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
  *       400:
  *         description: Invalid input
+ *       500:
+ *         description: Internal server error
  */
+
 userRouter.post('/register', async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
-    const result = await userService.registerUser({ name, email, password });
-    if (result.success) {
-        res.status(201).json(result.user);
-    } else {
-        res.status(400).json({ message: result.message });
+    try {
+        const { name, email, password } = req.body;
+
+        // Controleer of alle velden aanwezig zijn
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: 'Name, email, and password are required.' });
+        }
+
+        // Registreer de gebruiker via de UserService
+        const result = await userService.registerUser({ name, email, password });
+
+        if (result.success) {
+            // Geef een succesvolle response terug
+            res.status(201).json({
+                message: 'User successfully registered',
+                user: result.user
+            });
+        } else {
+            // Geef een foutmelding terug vanuit de service
+            res.status(400).json({ message: result.message });
+        }
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
