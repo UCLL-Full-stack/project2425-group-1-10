@@ -1,9 +1,15 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es6",
-        "rootDir": "./",
-        "strict": true,
-        "esModuleInterop": true
-    }
-}
+      "module": "commonjs",
+      "target": "es6",
+      "rootDir": "./",
+      "strict": false, 
+      "esModuleInterop": true,
+      "noEmitOnError": false
+    },
+    "include": [
+      "src/**/*",
+      "test/**/*"
+    ]
+  }
+  

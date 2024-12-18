@@ -1,8 +1,12 @@
+import { mockSession } from 'next-auth/client/__tests__/helpers/mocks';
+import user = mockSession.user;
+
 export interface User {
     id: string;
     name: string;
     password: string;
     email: string;
+    role: string;
 }
 
 export interface Category {

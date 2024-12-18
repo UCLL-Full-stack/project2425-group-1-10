@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
 
 const LoginForm: React.FC = () => {
+
+    const {t} = useTranslation('login');
+
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState<{ email?: string; password?: string }>({});
     const router = useRouter();
@@ -17,14 +21,14 @@ const LoginForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Basic validation
+        
         const newError: { email?: string; password?: string } = {};
         if (!credentials.email) newError.email = 'Email is required';
         if (!credentials.password) newError.password = 'Password is required';
 
         setError(newError);
 
-        // Stop form submission if there are validation errors
+        
         if (Object.keys(newError).length > 0) return;
 
         const result = await signIn('credentials', {
@@ -36,7 +40,7 @@ const LoginForm: React.FC = () => {
         if (result?.error) {
             setError({ password: 'Invalid email or password' });
         } else {
-            router.push('/dashboard'); // Redirect to dashboard after successful login
+            router.push('/dashboard'); 
         }
     };
 
@@ -66,7 +70,7 @@ const LoginForm: React.FC = () => {
                 }}
             >
                 <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>
-                    Login
+                    {t('login:login_title')}
                 </h2>
                 <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                     <div style={{ marginBottom: '16px' }}>
@@ -78,7 +82,7 @@ const LoginForm: React.FC = () => {
                                 width: '100%',
                             }}
                         >
-                            Email
+                            {t('login:login_email')}
                         </label>
                         <input
                             type="email"
@@ -106,7 +110,7 @@ const LoginForm: React.FC = () => {
                                 width: '100%',
                             }}
                         >
-                            Password
+                            {t('login:login_password')}
                         </label>
                         <input
                             type="password"
@@ -137,13 +141,13 @@ const LoginForm: React.FC = () => {
                             borderRadius: '4px',
                         }}
                     >
-                        Login
+                        {t('login:login_title')}
                     </button>
                 </form>
                 <div className="text-center mt-4">
-                    Don't have an account?{' '}
+                    {t('login:login_description')}
                     <Link className="text-blue-500" href="/register">
-                        Register
+                        {t('login:login_register')}
                     </Link>
                 </div>
             </div>

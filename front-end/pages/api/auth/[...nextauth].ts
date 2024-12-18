@@ -27,6 +27,7 @@ const authHandler: NextApiHandler = (req, res) =>
                                 id: response.data.id,
                                 name: response.data.name,
                                 email: response.data.email,
+                                role: response.data.role
                             };
                         }
                         return null;
@@ -43,6 +44,7 @@ const authHandler: NextApiHandler = (req, res) =>
                     token.email = user.email;
                     token.id = user.id;
                     token.name = user.name;
+                    token.role = user.role;
                 }
                 return token;
             },
@@ -50,7 +52,9 @@ const authHandler: NextApiHandler = (req, res) =>
                 if (token.id) {
                     session.user.id = token.id as string;
                 }
-
+                if (token.role) {
+                    session.user.role = token.role;
+                }
                 return session;
             },
         },

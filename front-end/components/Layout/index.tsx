@@ -1,23 +1,34 @@
 import React from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import clsx from 'clsx';
+import { useTranslation } from 'next-i18next';
 
 interface LayoutProps {
     children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+
+    const { t } = useTranslation('common');
+    const router = useRouter();
+    const { pathname, asPath, query, locale } = router;
+
     const { data: session } = useSession();
     const handleLogout = () => {
         signOut({ callbackUrl: '/login' });
     };
-    const router = useRouter();
+
+    const changeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedLocale = e.target.value;
+        router.push({ pathname, query }, asPath, { locale: selectedLocale });
+    };
+
     return (
         <div className="overflow-hidden ">
             <header
-                className={clsx('sticky h-20 top-0 w-full  z-10 ', {
+                className={clsx('sticky h-20 top-0 w-full  z-10 shadow-xl', {
                     'bg-red-200': router.pathname === '/',
                 })}
             >
@@ -27,17 +38,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Link>
 
                     <div className="flex items-center space-x-6">
+                        <select onChange={changeLanguage} defaultValue={router.locale}>
+                            <option value="en">English</option>
+                            <option value="nl">Dutch</option>
+                        </select>
+
                         <Link
                             href="/spending"
                             className="px-4 py-2 text-gray-900 font-semibold  rounded-md hover:text-red-900 focus:outline-none"
                         >
-                            Spending
+                            {t('common:head_one')}
                         </Link>
                         <Link
                             href="/dashboard"
                             className="px-4 py-2 text-gray-900 font-semibold  rounded-md hover:text-red-900 focus:outline-none"
                         >
-                            Dashboard
+                            {t('common:head_two')}
                         </Link>
                         {session ? (
                             <button
@@ -51,7 +67,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                                 onClick={() => router.push('/login')}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
                             >
-                                Login
+                                {t('common:head_login')}
                             </button>
                         )}
                     </div>

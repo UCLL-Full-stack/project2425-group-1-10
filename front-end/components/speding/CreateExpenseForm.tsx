@@ -3,6 +3,7 @@ import { Category } from '@types';
 import { createExpense } from 'service/expenseService';
 import { useSession } from 'next-auth/react';
 import { NotificationModal } from 'components/common/NotificationModal';
+import { useTranslation } from 'next-i18next';
 
 interface CreateExpenseFormProps {
     categories: Category[];
@@ -10,6 +11,7 @@ interface CreateExpenseFormProps {
 }
 
 const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({ categories, onSuccess }) => {
+    const {t} = useTranslation('home');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [expense, setExpense] = useState({
         categoryId: '',
@@ -97,12 +99,14 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({ categories, onSuc
     return (
         <>
             <div className="flex justify-center items-center p-2.5">
-                <div className="flex flex-col items-center p-8 border-2 border-black max-w-[600px] w-full bg-[#f8eaea] rounded-lg shadow-md">
-                    <h2 className="text-2xl font-bold mb-5">Create Expense</h2>
+                <div className="fle flex-col items-center p-8 border-2 border-black max-w-[600px] w-full bg-[#f8eaea] rounded-lg shadow-md">
+                    <h2 className="text-2xl font-bold mb-5">{t('home:home_expense_create')}</h2>
                     <form onSubmit={handleSubmit} className="w-full">
                         <div className="h-[300px] overflow-y-scroll px-2">
                             <div className="mb-4">
-                                <label className="font-bold block mb-1 w-full">Category</label>
+                                <label className="font-bold block mb-1 w-full">{
+                                    t('home:home_expense_input_one')
+                                }</label>
                                 <select
                                     name="categoryId"
                                     value={expense.categoryId}
@@ -123,7 +127,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({ categories, onSuc
                             </div>
 
                             <div className="mb-4">
-                                <label className="font-bold block mb-1 w-full">Description</label>
+                                <label className="font-bold block mb-1 w-full">{t('home:home_expense_input_two')}</label>
                                 <input
                                     type="text"
                                     name="description"
@@ -138,7 +142,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({ categories, onSuc
                             </div>
 
                             <div className="mb-4">
-                                <label className="font-bold block mb-1 w-full">Amount</label>
+                                <label className="font-bold block mb-1 w-full">{t('home:home_expense_input_three')}</label>
                                 <input
                                     type="number"
                                     name="amount"
@@ -153,7 +157,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({ categories, onSuc
                             </div>
 
                             <div className="mb-4">
-                                <label className="font-bold block mb-1 w-full">Date</label>
+                                <label className="font-bold block mb-1 w-full">{t('home:home_expense_input_four')}</label>
                                 <input
                                     type="date"
                                     name="date"
@@ -171,7 +175,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({ categories, onSuc
                                 isSubmitting ? 'opacity-50' : 'opacity-100'
                             }`}
                         >
-                            {isSubmitting ? 'Adding expense...' : 'Add Expense'}
+                            {isSubmitting ? 'Adding expense...' : t('home:home_expense_button')}
                         </button>
                     </form>
                 </div>

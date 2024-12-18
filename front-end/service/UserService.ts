@@ -11,6 +11,7 @@ export const createAccount = async (
             name: user.name,
             email: user.email,
             password: user.password,
+            role: user.role,
         });
         return { success: true };
     } catch (error) {

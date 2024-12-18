@@ -123,7 +123,7 @@ const CATEGORY_TEMPLATES = [
     },
 ];
 
-// Utility functions
+
 const getRandomRecentDate = (): Date => {
     const now = new Date();
     const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
@@ -140,14 +140,14 @@ const getExpenseDescription = (categoryName: string): string => {
 
 async function main() {
     try {
-        // Clean up existing data
+
         console.log('🧹 Starting database cleanup...');
         await prisma.expense.deleteMany({});
         await prisma.category.deleteMany({});
         await prisma.user.deleteMany({});
         console.log('✨ Database cleaned successfully');
 
-        // Create users
+        
         console.log('👤 Creating users...');
         const users = await Promise.all(
             Array(10)
@@ -156,9 +156,9 @@ async function main() {
                     const firstName = faker.person.firstName();
                     const lastName = faker.person.lastName();
                     const email = faker.internet.email({ firstName, lastName }).toLowerCase();
-                    const password = 'password123'; // Default password for all users
+                    const password = 'password123'; 
 
-                    // Store credentials
+                    
                     userCredentials.push({
                         email,
                         password,
@@ -175,7 +175,7 @@ async function main() {
         );
         console.log(`✅ Created ${users.length} users`);
 
-        // Create categories for each user
+        
         console.log('📑 Creating categories...');
         const allCategories = [];
         for (const user of users) {
@@ -197,7 +197,7 @@ async function main() {
         }
         console.log('✅ Created categories for all users');
 
-        // Create expenses
+        
         console.log('💰 Creating expenses...');
         for (const category of allCategories) {
             const expensesCount = faker.number.int({ min: 30, max: 50 });
@@ -219,7 +219,7 @@ async function main() {
         }
         console.log('✅ Created expenses for all categories');
 
-        // Print summary
+        
         const stats = {
             users: await prisma.user.count(),
             categories: await prisma.category.count(),
@@ -231,7 +231,7 @@ async function main() {
         console.log(`Categories created: ${stats.categories}`);
         console.log(`Expenses created: ${stats.expenses}`);
 
-        // Print user credentials
+        
         console.log('\n🔑 User Credentials for Testing:');
         userCredentials.forEach((cred, index) => {
             console.log(`\nUser ${index + 1}:`);

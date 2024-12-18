@@ -1,11 +1,17 @@
 import { prismaClient } from '../util/prismaClient';
 import { IUser } from '../model/User';
 import { CreateUserDTO } from '../dtos/User';
+import { Role } from '@prisma/client';
 
 const createUser = async (userData: CreateUserDTO): Promise<IUser> => {
     try {
         const user = await prismaClient.user.create({
-            data: userData,
+            data: {
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+                role: userData.role || Role.USER, // Default to Role.USER if role is not provided
+            },
         });
         return user;
     } catch (error) {

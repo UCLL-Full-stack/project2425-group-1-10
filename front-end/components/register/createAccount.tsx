@@ -4,13 +4,19 @@ import { createAccount } from '../../service/UserService';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const roles = [
+    { name: 'User', value: "USER"},
+    { name: 'Guest', value: "GUEST"},
+    { name: 'Admin', value: "ADMIN"
+}]
+
 const CreateAccount: React.FC = () => {
-    const [user, setUser] = useState<Omit<User, 'id'>>({ name: '', password: '', email: '' });
+    const [user, setUser] = useState<Omit<User, 'id'>>({ name: '', password: '', email: '', role:'USER'});
     const [error, setError] = useState<{ name?: string; password?: string; email?: string }>({});
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const router = useRouter();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setUser((prevUser) => ({ ...prevUser, [name]: value }));
         setError((prevError) => ({ ...prevError, [name]: '' }));
@@ -36,7 +42,7 @@ const CreateAccount: React.FC = () => {
 
         if (result.success) {
             setSuccessMessage('Account created successfully!');
-            setUser({ name: '', password: '', email: '' });
+            setUser({ name: '', password: '', email: '', role:'USER' });
             setError({});
             router.push('/login');
         } else {
@@ -72,8 +78,8 @@ const CreateAccount: React.FC = () => {
                 <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>
                     Create Account
                 </h2>
-                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                    <div style={{ marginBottom: '16px' }}>
+                <form onSubmit={handleSubmit} style={{width: '100%'}}>
+                    <div style={{marginBottom: '16px'}}>
                         <label
                             style={{
                                 fontWeight: 'bold',
@@ -97,11 +103,11 @@ const CreateAccount: React.FC = () => {
                             }}
                         />
                         {error.name && (
-                            <div style={{ color: 'black', marginTop: '5px' }}>{error.name}</div>
+                            <div style={{color: 'black', marginTop: '5px'}}>{error.name}</div>
                         )}
                     </div>
 
-                    <div style={{ marginBottom: '16px' }}>
+                    <div style={{marginBottom: '16px'}}>
                         <label
                             style={{
                                 fontWeight: 'bold',
@@ -125,11 +131,11 @@ const CreateAccount: React.FC = () => {
                             }}
                         />
                         {error.password && (
-                            <div style={{ color: 'black', marginTop: '5px' }}>{error.password}</div>
+                            <div style={{color: 'black', marginTop: '5px'}}>{error.password}</div>
                         )}
                     </div>
 
-                    <div style={{ marginBottom: '16px' }}>
+                    <div style={{marginBottom: '16px'}}>
                         <label
                             style={{
                                 fontWeight: 'bold',
@@ -153,8 +159,28 @@ const CreateAccount: React.FC = () => {
                             }}
                         />
                         {error.email && (
-                            <div style={{ color: 'black', marginTop: '5px' }}>{error.email}</div>
+                            <div style={{color: 'black', marginTop: '5px'}}>{error.email}</div>
                         )}
+                    </div>
+
+                    <div style={{marginBottom: '16px'}}>
+                        <label
+                            style={{
+                                fontWeight: 'bold',
+                                display: 'block',
+                                marginBottom: '5px',
+                                width: '100%',
+                            }}
+                        >
+                            Role
+                        </label>
+                        <select name="role" onChange={handleChange}>
+                            {roles.map((item) => (
+                                <option key={item.value} value={item.value}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     <button
@@ -173,7 +199,7 @@ const CreateAccount: React.FC = () => {
                     </button>
                 </form>
                 {successMessage && (
-                    <div style={{ color: 'green', marginTop: '10px' }}>{successMessage}</div>
+                    <div style={{color: 'green', marginTop: '10px'}}>{successMessage}</div>
                 )}
                 <div className="text-center mt-4">
                     Already have an account?{' '}

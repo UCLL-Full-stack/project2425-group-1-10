@@ -1,27 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { FaQuoteLeft } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { GetStaticProps } from 'next';
+import { useTranslation } from 'next-i18next';
 
-const savingsQuotes = [
-    {
-        text: 'Do not save what is left after spending, but spend what is left after saving.',
-        author: 'Warren Buffett',
-    },
-    { text: 'A penny saved is a penny earned.', author: 'Benjamin Franklin' },
-    {
-        text: 'Saving is the gap between your ego and your income.',
-        author: 'Morgan Housel',
-    },
-    {
-        text: 'The habit of saving is itself an education; it fosters every virtue, teaches self-denial, cultivates the sense of order, and trains to forethought.',
-        author: 'T.T. Munger',
-    },
-    { text: 'Saving today ensures a brighter tomorrow.', author: 'Ayoub' },
-    { text: 'Financial freedom begins with savings.', author: 'Nasser' },
-];
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale as string, ['index', 'common', 'login', 'home']))
+        },
+    };
+};
 
 const HomePage: React.FC = () => {
+
+    const { t } = useTranslation('index');
+    const { locale } = useRouter();
+
     const [quote, setQuote] = useState<{ text: string; author: string }>({
         text: '',
         author: '',
@@ -29,16 +26,26 @@ const HomePage: React.FC = () => {
     const router = useRouter();
 
     useEffect(() => {
+
+        const savingsQuotes = [
+            { text: t('quote_one'), author: 'Benjamin Franklin' },
+            { text: t('quote_two'), author: 'Warren Buffett' },
+            { text: t('quote_three'), author: 'Morgan Housel' },
+            { text: t('quote_four'), author: 'T.T. Munger' },
+            { text: t('quote_five'), author: 'Ayoub' },
+            { text: t('quote_six'), author: 'Nasser' },
+        ];
+
         const randomQuote = savingsQuotes[Math.floor(Math.random() * savingsQuotes.length)];
         setQuote(randomQuote);
-    }, []);
+    }, [locale]);
 
     const handleRedirect = () => {
         router.push('/dashboard');
     };
 
     return (
-        <div className="relative overflow-hidden flex items-center flex-col justify-center h-full text-gray-800">
+        <div className="relative overflow-hidden flex items-center flex-col justify-center h-full text-gray-800" key={locale}>
             {/* Background Image */}
             <div className="absolute inset-0 -z-10">
                 <Image
@@ -58,10 +65,41 @@ const HomePage: React.FC = () => {
                 <p className="text-lg font-semibold text-gray-500 mb-6">– {quote.author}</p>
                 <button
                     onClick={handleRedirect}
-                    className="bg-green-500 text-white px-6 py-3 rounded-lg shadow hover:bg-green-600 transition"
+                    className="bg-green-500 text-white px-6 py-3 rounded-lg shadow hover:bg-green-600 transition mb-6"
                 >
-                    Go to Dashboard
+                    {t('index:dashboard_button')}
                 </button>
+
+                {/* Tabel met gebruikersgegevens */}
+                <div className="mt-6">
+                    <h2 className="text-lg font-bold mb-4">{t('index:testing_credentials')}</h2>
+                    <table className="table-auto border-collapse border border-gray-300 w-full text-left text-sm">
+                        <thead>
+                            <tr>
+                                <th className="border border-gray-300 px-4 py-2">{t('index:username')}</th>
+                                <th className="border border-gray-300 px-4 py-2">{t('index:password')}</th>
+                                <th className="border border-gray-300 px-4 py-2">{t('index:email')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="border border-gray-300 px-4 py-2">user1</td>
+                                <td className="border border-gray-300 px-4 py-2">user12345</td>
+                                <td className="border border-gray-300 px-4 py-2">user1@gmail.com</td>
+                            </tr>
+                            <tr>
+                                <td className="border border-gray-300 px-4 py-2">guest1</td>
+                                <td className="border border-gray-300 px-4 py-2">guest12345</td>
+                                <td className="border border-gray-300 px-4 py-2">guest1@gmail.com</td>
+                            </tr>
+                            <tr>
+                                <td className="border border-gray-300 px-4 py-2">admin1</td>
+                                <td className="border border-gray-300 px-4 py-2">admin12345</td>
+                                <td className="border border-gray-300 px-4 py-2">admin1@gmail.com</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

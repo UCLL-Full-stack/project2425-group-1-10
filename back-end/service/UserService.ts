@@ -34,8 +34,11 @@ export class UserService {
                 return { success: false, message: 'Email is already in use' };
             }
             const hashedPassword = await bcrypt.hash(data.password, 10);
-            const userData = { ...data, password: hashedPassword };
+            console.log(hashedPassword);
+            const userData = { ...data, password: hashedPassword,Role:data.role || "USER" };
+            console.log(userData);
             const user = await userDB.createUser(userData);
+            console.log(userData);
             return { success: true, user };
         } catch (error) {
             console.error(error);
@@ -52,7 +55,7 @@ export class UserService {
                 return { success: false, message: 'User not found' };
             }
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             return { success: false, message: 'Failed to retrieve user' };
         }
     }

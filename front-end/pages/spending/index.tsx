@@ -8,8 +8,20 @@ import { fetchCategories, deleteCategory } from 'service/categoryService';
 import { CreateCategoryForm } from '@components/speding/CreateCategory';
 import { deleteExpense } from 'service/expenseService';
 import { NotificationModal } from '@components/common/NotificationModal';
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale as string, ['common', 'home', 'index', 'login'])),
+        },
+    };
+};
 
 const Spending = () => {
+    const {t} = useTranslation('home');
     const session = useSession();
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -88,10 +100,10 @@ const Spending = () => {
 
     return (
         <div>
-            <div className="min-h-[100vh-240px] max-w-6xl mx-auto w-full bg-rose-400 p-6 relative">
+            <div className="min-h-[100vh-240px] max-w-6xl mx-auto w-full bg-rose-400 p-6 relative rounded-lg">
                 <SpendingStatus categories={categories} />
                 <h1 className="text-4xl font-bold text-center mb-12 text-black">
-                    Spending Categories
+                    {t('home:home_title')}
                 </h1>
                 <div className="flex gap-6 h-[calc(100vh-220px)]">
                     <div className="flex-1 overflow-x-auto">
@@ -139,14 +151,14 @@ const Spending = () => {
                                             </div>
                                             <div className="mb-4">
                                                 <div className="text-xs text-gray-900">
-                                                    Spent: ${category.totalSpent.toFixed(2)}
+                                                    {t('home:home_spent')}: ${category.totalSpent.toFixed(2)}
                                                 </div>
                                                 <div className="text-xs text-gray-900">
-                                                    Remaining: ${category.remaining.toFixed(2)}
+                                                    {t('home:home_remaining')}: ${category.remaining.toFixed(2)}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex-1 overflow-y-auto p-4 bg-gray-200 border-2 border-black">
+                                        <div className="rounded-lg flex-1 overflow-y-auto p-4 bg-gray-200 border-2 border-black">
                                             <div className="space-y-2 text-black">
                                                 {category?.expenses?.length > 0 ? (
                                                     category.expenses.map((expense) => (
@@ -195,9 +207,9 @@ const Spending = () => {
                             <FaPlus />
                         </button>
                     </div>
-                    <div className="w-72 h-full overflow-hidden shrink-0 flex flex-col">
+                    <div className="w-72 h-full overflow-hidden shrink-0 flex flex-col mt-5">
                         <h2 className="text-lg text-center font-semibold pb-3 text-black">
-                            New Expense
+                            {t('home:home_expense_title')}
                         </h2>
                         <div>
                             <CreateExpenseForm

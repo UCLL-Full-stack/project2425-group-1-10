@@ -79,14 +79,11 @@ const userService = new UserService();
 
 userRouter.post('/register', async (req: Request, res: Response) => {
     try {
-        const { name, email, password } = req.body;
-
+        const { name, email, password,role } = req.body;
         if (!name || !email || !password) {
             return res.status(400).json({ message: 'Name, email, and password are required.' });
         }
-
-        const result = await userService.registerUser({ name, email, password });
-
+        const result = await userService.registerUser({ name, email, password,role });
         if (result.success) {
             res.status(201).json({
                 message: 'User successfully registered',
@@ -96,7 +93,7 @@ userRouter.post('/register', async (req: Request, res: Response) => {
             res.status(400).json({ message: result.message });
         }
     } catch (error) {
-        console.error('Error during registration:', error);
+        // console.error('Error during registration:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });

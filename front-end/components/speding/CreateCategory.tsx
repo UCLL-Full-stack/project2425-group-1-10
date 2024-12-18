@@ -3,6 +3,7 @@ import { CategoryFormInput, Category } from '@types';
 import { createCategory, updateCategory } from '../../service/categoryService';
 import { useSession } from 'next-auth/react';
 import { NotificationModal } from 'components/common/NotificationModal';
+import { useTranslation } from 'next-i18next';
 
 interface CreateCategoryFormProps {
     category?: Category | null;
@@ -19,7 +20,9 @@ const CreateCategoryForm: React.FC<CreateCategoryFormProps> = ({
     isOpen,
     onClose,
 }: CreateCategoryFormProps) => {
+    const {t} = useTranslation('home');
     console.log('category', category);
+
     const [formData, setFormData] = useState({
         name: category?.name || '',
         budget: category?.budget || '',
@@ -49,6 +52,8 @@ const CreateCategoryForm: React.FC<CreateCategoryFormProps> = ({
         const newError: { name?: string; budget?: string } = {};
         if (!formData.name) newError.name = 'Category name is required';
         if (!formData.budget) newError.budget = 'Budget is required';
+        if(session?.user.role === 'GUEST' && formData.budget > 1000) newError.budget = 'Guest users can have a max budget of 1000';
+        if(session?.user.role === 'USER' && formData.budget > 1000) newError.budget = 'User can have a max budget of 2000';
 
         setError(newError);
         if (Object.keys(newError).length > 0) {
@@ -131,11 +136,13 @@ const CreateCategoryForm: React.FC<CreateCategoryFormProps> = ({
                             ✕
                         </button>
                         <h2 className="text-2xl font-bold mb-5">
-                            {category ? 'Update Category' : 'Create Category'}
+                            {category ? t('home:update_category') : t('home:category_create')}
                         </h2>
                         <form onSubmit={handleSubmit} className="w-full">
                             <div className="mb-4">
-                                <label className="font-bold block mb-1 w-full">Category Name</label>
+                                <label className="font-bold block mb-1 w-full">{
+                                    t('home:category_name')
+                                }</label>
                                 <input
                                     type="text"
                                     name="name"
@@ -147,7 +154,7 @@ const CreateCategoryForm: React.FC<CreateCategoryFormProps> = ({
                             </div>
 
                             <div className="mb-4">
-                                <label className="font-bold block mb-1 w-full">Budget</label>
+                                <label className="font-bold block mb-1 w-full">{t('home:category_budget')}</label>
                                 <input
                                     type="number"
                                     name="budget"
@@ -168,8 +175,8 @@ const CreateCategoryForm: React.FC<CreateCategoryFormProps> = ({
                                 {isSubmitting
                                     ? 'Saving...'
                                     : category
-                                    ? 'Update Category'
-                                    : 'Add Category'}
+                                    ? t('home:update_category')
+                                    : t('home:category_add')}
                             </button>
                         </form>
                     </div>
