@@ -28,9 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className="overflow-hidden ">
             <header
-                className={clsx('sticky h-20 top-0 w-full  z-10 shadow-xl', {
-                    'bg-red-200': router.pathname === '/',
-                })}
+                className={clsx('sticky h-20 top-0 w-full  z-10 shadow-xl bg-white')}
             >
                 <div className="max-w-screen-xl mx-auto px-6 py-4 flex justify-between items-center">
                     <Link href="/">

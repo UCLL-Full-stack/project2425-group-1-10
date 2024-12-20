@@ -20,7 +20,6 @@ test('should register a user successfully with valid data', async () => {
       updatedAt: new Date(),
     };
   
-    
     UserService.prototype.registerUser = jest.fn().mockResolvedValue({
       success: true,
       user: mockUser,
@@ -46,14 +45,13 @@ test('should register a user successfully with valid data', async () => {
         password: 'securepassword',
       });
   
-    
     const mockUserStringified = {
       ...mockUser,
       createdAt: mockUser.createdAt.toISOString(),
       updatedAt: mockUser.updatedAt.toISOString(),
     };
   
-    
+    // Compare the response with the mockUser after stringifying the date fields
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('User successfully registered');
     expect(response.body.user).toEqual(mockUserStringified);

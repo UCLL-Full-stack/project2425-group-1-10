@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
+import {useTranslation} from "next-i18next";
 
 interface NotificationModalProps {
     isOpen: boolean;
@@ -18,6 +19,9 @@ export const NotificationModal: React.FC<NotificationModalProps> = ({
     description,
     onConfirm,
 }) => {
+
+    const {t} = useTranslation();
+
     if (!isOpen) return null;
 
     const icon =
@@ -58,14 +62,14 @@ export const NotificationModal: React.FC<NotificationModalProps> = ({
                             onClick={onConfirm}
                             className="px-4 py-2 bg-red-500 text-white font-medium rounded hover:bg-red-600 transition-colors"
                         >
-                            Delete
+                            {t('common:delete')}
                         </button>
                     )}
                     <button
                         onClick={onClose}
                         className="px-4 py-2 bg-rose-400 text-white font-medium rounded hover:bg-rose-500 transition-colors"
                     >
-                        {onConfirm ? 'Cancel' : 'OK'}
+                        {onConfirm ? t('common:cancel') : 'OK'}
                     </button>
                 </div>
             </div>

@@ -240,8 +240,8 @@ const Spending = () => {
                     setExpenseToDelete(null);
                 }}
                 type="error"
-                title="Delete Expense"
-                description="Are you sure you want to delete this expense?"
+                title={t('home:expense_del_title')}
+                description={t('home:expense_del_desc')}
                 onConfirm={confirmDelete}
             />
             <NotificationModal
@@ -251,8 +251,8 @@ const Spending = () => {
                     setCategoryToDelete(null);
                 }}
                 type="error"
-                title="Delete Category"
-                description={`Are you sure you want to delete the category "${categoryToDelete?.name}"? This will also delete all expenses in this category.`}
+                title={t('home:delete_title')}
+                description={`${t('home:delete_desc_one')} "${categoryToDelete?.name}"? ${t('home:delete_desc_two')}`}
                 onConfirm={confirmCategoryDelete}
             />
         </div>

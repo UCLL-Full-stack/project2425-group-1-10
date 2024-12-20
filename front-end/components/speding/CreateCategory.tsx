@@ -50,10 +50,10 @@ const CreateCategoryForm: React.FC<CreateCategoryFormProps> = ({
 
         // Basic validation
         const newError: { name?: string; budget?: string } = {};
-        if (!formData.name) newError.name = 'Category name is required';
-        if (!formData.budget) newError.budget = 'Budget is required';
-        if(session?.user.role === 'GUEST' && formData.budget > 1000) newError.budget = 'Guest users can have a max budget of 1000';
-        if(session?.user.role === 'USER' && formData.budget > 1000) newError.budget = 'User can have a max budget of 2000';
+        if (!formData.name) newError.name = t('home:error_one');
+        if (!formData.budget) newError.budget = t('home:error_two');
+        if(session?.user.role === 'GUEST' && formData.budget > 1000) newError.budget = t('home:error_three');
+        if(session?.user.role === 'USER' && formData.budget > 2000) newError.budget = t('home:error_four');
 
         setError(newError);
         if (Object.keys(newError).length > 0) {

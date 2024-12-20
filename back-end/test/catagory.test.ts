@@ -19,7 +19,6 @@ describe('POST /categories', () => {
       updatedAt: new Date(),
     };
 
-    
     CategoryService.prototype.createCategory = jest.fn().mockResolvedValue({
       success: true,
       category: mockCategory,
@@ -61,7 +60,6 @@ describe('POST /categories', () => {
       updatedAt: mockCategory.updatedAt.toISOString(),
     };
 
-    
     expect(response.status).toBe(201);
     expect(response.body).toEqual(mockCategoryStringified);
   });
@@ -122,7 +120,6 @@ describe('POST /categories', () => {
       .send({
         name: 'Food',
         budget: 200.0,
-        
       });
 
     expect(response.status).toBe(401);

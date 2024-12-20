@@ -21,7 +21,6 @@ describe('POST /expenses', () => {
       updatedAt: new Date(),
     };
 
-    // Mock the createExpense method
     ExpenseService.prototype.createExpense = jest.fn().mockResolvedValue({
       success: true,
       expense: mockExpense,
@@ -61,7 +60,6 @@ describe('POST /expenses', () => {
         date: new Date(),
       });
 
-    // Convert the dates to string format for comparison
     const mockExpenseStringified = {
       ...mockExpense,
       date: mockExpense.date.toISOString(),
@@ -69,7 +67,6 @@ describe('POST /expenses', () => {
       updatedAt: mockExpense.updatedAt.toISOString(),
     };
 
-    // Compare the response with the mockExpense after stringifying the date fields
     expect(response.status).toBe(201);
     expect(response.body.success).toBe(true);
     expect(response.body.expense).toEqual(mockExpenseStringified);
@@ -137,7 +134,6 @@ describe('POST /expenses', () => {
         description: 'Lunch',
         amount: 15.5,
         categoryId: 2,
-        // userId is missing to simulate unauthorized request
       });
 
     expect(response.status).toBe(401);
