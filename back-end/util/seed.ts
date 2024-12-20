@@ -11,6 +11,15 @@ interface UserCredential {
 
 const userCredentials: UserCredential[] = [];
 
+interface UserCategoryDto {
+    id: number;
+    userId: number;
+    name: string;
+    budget: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 const CATEGORY_TEMPLATES = [
     {
         name: 'Groceries',
@@ -177,7 +186,7 @@ async function main() {
 
         
         console.log('📑 Creating categories...');
-        const allCategories = [];
+        const allCategories : UserCategoryDto[] = [];
         for (const user of users) {
             const userCategories = await Promise.all(
                 CATEGORY_TEMPLATES.map((template) =>
